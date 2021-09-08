@@ -66,6 +66,25 @@ struct Home : View {
                     
                     TextField("Search ...", text: self.$search)
                     
+                    
+                    if self.search != "" {
+                        Button(action: {
+    //                        delete old list
+                            self.RandomImages.images.removeAll()
+                            self.isSearching = true
+    //                        Search for image by name
+                            self.SearchData()
+                            self.expand = false
+                        }){
+                            Text("Find")
+                                .fontWeight(.bold)
+                                .foregroundColor(.black)
+                        }
+                    }
+
+                    
+                    
+                    
                     Button(action: {
                         
                         withAnimation {
@@ -88,19 +107,6 @@ struct Home : View {
                 }
                 
                 
-                if self.search != "" {
-                    Button(action: {
-//                        delete old list
-                        self.RandomImages.images.removeAll()
-                        self.isSearching = true
-//                        Search for image by name
-                        self.SearchData()
-                    }){
-                        Text("Find")
-                            .fontWeight(.bold)
-                            .foregroundColor(.black)
-                    }
-                }
                 
                 
                 
@@ -113,11 +119,32 @@ struct Home : View {
             
             
             if self.RandomImages.images.isEmpty {
-                //                empty or loading state ....
                 
                 Spacer()
                 
-                Indicator()
+                if self.RandomImages.noReuslt {
+                    
+                    VStack{
+                        Text("No result ...")
+                        Button(action: {
+                            self.search = ""
+                            self.isSearching = false
+                            self.RandomImages.images.removeAll()
+                            self.RandomImages.updateData()
+                        }){
+                            Text("Try again ...")
+                        }
+
+                    }
+                }else{
+                    Indicator()
+                }
+                
+                //                empty or loading state ....
+                
+                
+                
+               
                 
                 Spacer()
                 
@@ -243,6 +270,8 @@ class getData : ObservableObject {
     
     @Published var images : [[Photo]] = []
     
+    @Published var noReuslt = false
+    
     
     init() {
         //        initial data
@@ -315,6 +344,12 @@ class getData : ObservableObject {
             do {
                 
                 let json = try JSONDecoder().decode(SearchPhoto.self, from: data!)
+                
+                if json.results.isEmpty {
+                    self.noReuslt = true
+                }else{
+                    self.noReuslt = false
+                }
                 
                 for i in stride(from: 0, to: json.results.count, by: 2){
                     
