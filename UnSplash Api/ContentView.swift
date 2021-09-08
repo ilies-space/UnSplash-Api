@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct ContentView: View {
     var body: some View {
@@ -95,7 +96,52 @@ struct Home : View {
             .padding()
             .background(Color.white)
             
-            Spacer()
+            
+            if self.RandomImages.images.isEmpty {
+                //                empty or loading state ....
+                
+                Spacer()
+                
+                Indicator()
+                
+                Spacer()
+                
+            }else {
+                //                image availible case ...
+                
+                ScrollView(/*@START_MENU_TOKEN@*/.vertical/*@END_MENU_TOKEN@*/, showsIndicators: false) {
+                    //                    Collection View
+                    
+                    VStack(spacing: 15){
+                        
+                        ForEach(self.RandomImages.images, id: \.self){i in
+                            
+                            HStack(spacing : 20 ){
+                                ForEach (i) { j in
+                                    
+                                    AnimatedImage(url: URL(string: j.urls["thumb"]!))
+                                        .resizable()
+                                        .frame(width:(UIScreen.main.bounds.width - 50) / 2, height: 200 )
+                                        .aspectRatio(contentMode: .fill)
+                                        .cornerRadius(20)
+                                        .contextMenu(ContextMenu(menuItems: {
+                                            Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/){
+                                                HStack{
+                                                    Text("SAVE")
+                                                }
+                                            }
+                                        }))
+                                }
+                            }
+                            
+                        }
+                        
+                    }
+                    .padding(.top)
+                    
+                }
+            }
+            
         }
         .background(Color.black.opacity(0.07).edgesIgnoringSafeArea(.all ))
         .edgesIgnoringSafeArea(.top)
@@ -106,7 +152,7 @@ struct Home : View {
 
 class getData : ObservableObject {
     
-    @Published var image : [[Photo]] = []
+    @Published var images : [[Photo]] = []
     
     
     init() {
@@ -145,7 +191,7 @@ class getData : ObservableObject {
                         }
                     }
                     DispatchQueue.main.async {
-                        self.image.append(ArrayData)
+                        self.images.append(ArrayData)
                     }
                 }
                 
@@ -159,10 +205,25 @@ class getData : ObservableObject {
     
 }
 
-struct Photo : Identifiable,Decodable {
+struct Photo : Identifiable,Decodable,Hashable {
     
     var id : String
     var urls : [String : String]
+}
+
+struct Indicator : UIViewRepresentable {
+    
+    func makeUIView(context: Context) -> UIActivityIndicatorView {
+        
+        let view = UIActivityIndicatorView(style: .large)
+        view.startAnimating()
+        return view
+        
+        
+    }
+    func updateUIView(_ uiView: UIActivityIndicatorView, context: Context) {
+        
+    }
 }
 
 
