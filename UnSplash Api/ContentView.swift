@@ -133,7 +133,21 @@ class getData : ObservableObject {
             do {
                 
                 let json = try JSONDecoder().decode([Photo].self, from: data!)
-                print(json)
+                
+                for i in stride(from: 0, to: json.count, by: 2){
+                    
+                    var ArrayData : [Photo] = []
+                    
+                    for j in i..<i+2 {
+                        
+                        if j < json.count {
+                            ArrayData.append(json[j])
+                        }
+                    }
+                    DispatchQueue.main.async {
+                        self.image.append(ArrayData)
+                    }
+                }
                 
             }catch{
                 print("Catch err ....")
