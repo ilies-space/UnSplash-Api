@@ -24,12 +24,13 @@ struct Home : View {
     
     @State var expand = false
     @State var search = ""
+    @ObservedObject var RandomImages = getData()
     
     var body: some View {
         
         VStack( spacing: 0) {
             HStack {
-                                
+                
                 if !self.expand{
                     VStack(alignment: .leading, spacing: 8) {
                         
@@ -100,3 +101,55 @@ struct Home : View {
         .edgesIgnoringSafeArea(.top)
     }
 }
+
+
+
+class getData : ObservableObject {
+    
+    @Published var image : [[Photo]] = []
+    
+    
+    init() {
+        //        initial data
+        updateData()
+    }
+    
+    func updateData()  {
+        
+        let key = "gKc-uC-4eHiLAK3qhJmfhVb-kz2RcaOU_f7DJDLvGWo"
+        let url = "https://api.unsplash.com/photos/random/?count=30&client_id=\(key)"
+        
+        let session = URLSession(configuration: .default)
+        
+        session.dataTask(with: URL(string: url)!) { (data, _ ,err) in
+            
+            if err != nil {
+                print((err?.localizedDescription)!)
+                return
+            }
+            
+            //            JSON Decoding
+            
+            do {
+                
+                let json = try JSONDecoder().decode([Photo].self, from: data!)
+                print(json)
+                
+            }catch{
+                print("Catch err ....")
+                print(error.localizedDescription)
+            }
+        }
+        .resume()
+    }
+    
+}
+
+struct Photo : Identifiable,Decodable {
+    
+    var id : String
+    var urls : [String : String]
+}
+
+
+
