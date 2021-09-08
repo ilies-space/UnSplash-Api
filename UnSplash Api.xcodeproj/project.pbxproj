@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6A269ADD26E923D0006DC8A9 /* PhotosModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A269ADC26E923D0006DC8A9 /* PhotosModel.swift */; };
 		6AC313B726E8210200A857E7 /* UnSplash_ApiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC313B626E8210200A857E7 /* UnSplash_ApiApp.swift */; };
 		6AC313B926E8210200A857E7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC313B826E8210200A857E7 /* ContentView.swift */; };
 		6AC313BB26E8210400A857E7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AC313BA26E8210400A857E7 /* Assets.xcassets */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6A269ADC26E923D0006DC8A9 /* PhotosModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosModel.swift; sourceTree = "<group>"; };
 		6AC313B326E8210200A857E7 /* UnSplash Api.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UnSplash Api.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AC313B626E8210200A857E7 /* UnSplash_ApiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnSplash_ApiApp.swift; sourceTree = "<group>"; };
 		6AC313B826E8210200A857E7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -35,6 +37,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6A269AD926E922EB006DC8A9 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				6A269ADC26E923D0006DC8A9 /* PhotosModel.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		6A269ADA26E922F4006DC8A9 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		6A269ADB26E922F9006DC8A9 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		6AC313AA26E8210200A857E7 = {
 			isa = PBXGroup;
 			children = (
@@ -54,6 +78,9 @@
 		6AC313B526E8210200A857E7 /* UnSplash Api */ = {
 			isa = PBXGroup;
 			children = (
+				6A269ADB26E922F9006DC8A9 /* Controller */,
+				6A269ADA26E922F4006DC8A9 /* View */,
+				6A269AD926E922EB006DC8A9 /* Model */,
 				6AC313B626E8210200A857E7 /* UnSplash_ApiApp.swift */,
 				6AC313B826E8210200A857E7 /* ContentView.swift */,
 				6AC313BA26E8210400A857E7 /* Assets.xcassets */,
@@ -148,6 +175,7 @@
 			files = (
 				6AC313B926E8210200A857E7 /* ContentView.swift in Sources */,
 				6AC313B726E8210200A857E7 /* UnSplash_ApiApp.swift in Sources */,
+				6A269ADD26E923D0006DC8A9 /* PhotosModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

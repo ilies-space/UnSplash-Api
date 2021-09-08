@@ -259,18 +259,13 @@ struct Home : View {
     }
 }
 
-
-
-
-
-
 //Fetch data
 
 class getData : ObservableObject {
     
     @Published var images : [[Photo]] = []
     
-    @Published var noReuslt = false
+    @Published var noReuslt : Bool = false
     
     
     init() {
