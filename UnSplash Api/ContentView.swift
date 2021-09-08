@@ -63,6 +63,19 @@ struct Home : View {
                 if self.expand {
                     
                     TextField("Search ...", text: self.$search)
+                    
+                    Button(action: {
+                        
+                        withAnimation {
+                            self.expand = false
+                        }
+                        
+                    }){
+                        Image(systemName: "xmark")
+                            .font(.system(size: 15,weight: .bold))
+                            .foregroundColor(.black)
+                    }
+                    .padding(.leading,10)
                 }
                 
                 
@@ -78,18 +91,7 @@ struct Home : View {
                 
                 
                 
-                Button(action: {
-                    
-                    withAnimation {
-                        self.expand = false
-                    }
-                    
-                }){
-                    Image(systemName: "xmark")
-                        .font(.system(size: 15,weight: .bold))
-                        .foregroundColor(.black)
-                }
-                .padding(.leading,10)
+                
                 
             }
             .padding(.top,UIApplication.shared.windows.first?.safeAreaInsets.top)
@@ -125,10 +127,28 @@ struct Home : View {
                                         .aspectRatio(contentMode: .fill)
                                         .cornerRadius(20)
                                         .contextMenu(ContextMenu(menuItems: {
-                                            Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/){
+                                            
+                                            //                                            save btn
+                                            
+                                            Button(action: {
+                                                
+                                                
+                                                SDWebImageDownloader()
+                                                    .downloadImage(with: URL(string: j.urls["full"]!)) { (image,_,_,_) in
+                                                        
+                                                        UIImageWriteToSavedPhotosAlbum(image!, nil, nil, nil)
+                                                        
+                                                    }
+                                                
+                                                   
+                                            }){
                                                 HStack{
                                                     Text("SAVE")
+                                                    Spacer()
+                                                    Image(systemName:
+                                                            "square.and.arrow.down.fill")
                                                 }
+                                                .foregroundColor(.black)
                                             }
                                         }))
                                 }
