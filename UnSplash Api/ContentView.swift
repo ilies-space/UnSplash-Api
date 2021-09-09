@@ -23,18 +23,19 @@ struct ContentView_Previews: PreviewProvider {
 
 struct Home : View {
     
-    @State var expand = false
-    @State var search = ""
+    @ObservedObject var  photosModel = PhotosModel()
     @ObservedObject var RandomImages = getData()
-    @State var page = 1
+    
+    
     @State var isSearching = false
+    @State var search = ""
     
     var body: some View {
         
         VStack( spacing: 0) {
             HStack {
                 
-                if !self.expand{
+                if !photosModel.expand{
                     VStack(alignment: .leading, spacing: 8) {
                         
                         
@@ -59,36 +60,36 @@ struct Home : View {
                     .foregroundColor(.gray )
                     .onTapGesture {
                         withAnimation {
-                            self.expand = true
+                            photosModel.expand = true
                         }
                     }
-                if self.expand {
+                if photosModel.expand {
                     
                     TextField("Search ...", text: self.$search)
                     
                     
                     if self.search != "" {
                         Button(action: {
-    //                        delete old list
+                            //                        delete old list
                             self.RandomImages.images.removeAll()
                             self.isSearching = true
-    //                        Search for image by name
+                            //                        Search for image by name
                             self.SearchData()
-                            self.expand = false
+                            photosModel.expand = false
                         }){
                             Text("Find")
                                 .fontWeight(.bold)
                                 .foregroundColor(.black)
                         }
                     }
-
+                    
                     
                     
                     
                     Button(action: {
                         
                         withAnimation {
-                            self.expand = false
+                            photosModel.expand = false
                         }
                         
                         if self.isSearching {
@@ -134,7 +135,7 @@ struct Home : View {
                         }){
                             Text("Try again ...")
                         }
-
+                        
                     }
                 }else{
                     Indicator()
@@ -144,7 +145,7 @@ struct Home : View {
                 
                 
                 
-               
+                
                 
                 Spacer()
                 
@@ -180,7 +181,7 @@ struct Home : View {
                                                         
                                                     }
                                                 
-                                                   
+                                                
                                             }){
                                                 HStack{
                                                     Text("SAVE")
@@ -202,11 +203,11 @@ struct Home : View {
                             if self.isSearching && self.search != "" {
                                 
                                 HStack{
-                                    Text("Page\(self.page)")
+                                    Text("Page\(photosModel.page)")
                                     Spacer()
                                     Button(action: {
                                         self.RandomImages.images.removeAll()
-                                        self.page += 1
+                                        photosModel.page += 1
                                         self.SearchData()
                                     })
                                     {
@@ -232,7 +233,7 @@ struct Home : View {
                         
                         
                         
-
+                        
                         
                         
                     }
@@ -251,7 +252,7 @@ struct Home : View {
     func SearchData()  {
         let key = "gKc-uC-4eHiLAK3qhJmfhVb-kz2RcaOU_f7DJDLvGWo"
         let query = self.search.replacingOccurrences(of: " ", with: "%20")
-        let url = "https://api.unsplash.com/search/photos/?page=\(self.page)&query=\(query)&client_id=\(key)"
+        let url = "https://api.unsplash.com/search/photos/?page=\(photosModel.page)&query=\(query)&client_id=\(key)"
         
         print(url)
         
@@ -259,149 +260,7 @@ struct Home : View {
     }
 }
 
-//Fetch data
 
-class getData : ObservableObject {
-    
-    @Published var images : [[Photo]] = []
-    
-    @Published var noReuslt : Bool = false
-    
-    
-    init() {
-        //        initial data
-        updateData()
-    }
-    
-    
-    
-    func updateData()  {
-        
-        let key = "gKc-uC-4eHiLAK3qhJmfhVb-kz2RcaOU_f7DJDLvGWo"
-        let url = "https://api.unsplash.com/photos/random/?count=30&client_id=\(key)"
-        
-        let session = URLSession(configuration: .default)
-        
-        session.dataTask(with: URL(string: url)!) { (data, _ ,err) in
-            
-            if err != nil {
-                print((err?.localizedDescription)!)
-                return
-            }
-            
-            //            JSON Decoding
-            
-            do {
-                
-                let json = try JSONDecoder().decode([Photo].self, from: data!)
-                
-                for i in stride(from: 0, to: json.count, by: 2){
-                    
-                    var ArrayData : [Photo] = []
-                    
-                    for j in i..<i+2 {
-                        
-                        if j < json.count {
-                            ArrayData.append(json[j])
-                        }
-                    }
-                    DispatchQueue.main.async {
-                        self.images.append(ArrayData)
-                    }
-                }
-                
-            }catch{
-                print("Catch err ....")
-                print(error.localizedDescription)
-            }
-        }
-        .resume()
-    }
-    
-    
-    
-    func SearchData(url : String)  {
-        
-       
-        let session = URLSession(configuration: .default)
-        
-        print("search link : \(url)")
-        
-        session.dataTask(with: URL(string: url)!) { (data, _ ,err) in
-            
-            if err != nil {
-                print((err?.localizedDescription)!)
-                return
-            }
-            
-            //            JSON Decoding
-            
-            do {
-                
-                let json = try JSONDecoder().decode(SearchPhoto.self, from: data!)
-                
-                if json.results.isEmpty {
-                    self.noReuslt = true
-                }else{
-                    self.noReuslt = false
-                }
-                
-                for i in stride(from: 0, to: json.results.count, by: 2){
-                    
-                    var ArrayData : [Photo] = []
-                    
-                    for j in i..<i+2 {
-                        
-                        if j < json.results .count {
-                            ArrayData.append(json.results[j])
-                        }
-                    }
-                    DispatchQueue.main.async {
-                        self.images.append(ArrayData)
-                    }
-                }
-                
-            }catch{
-                print("Catch err ....")
-                print(error.localizedDescription)
-            }
-        }
-        .resume()
-    }
-    
-
-    
-    
-}
-
-struct Photo : Identifiable,Decodable,Hashable {
-    
-    var id : String
-    var urls : [String : String]
-}
-
-
-//Search result model
-struct SearchPhoto : Decodable {
-    
-    var results : [Photo]
-}
-
-
-struct Indicator : UIViewRepresentable {
-    
-    func makeUIView(context: Context) -> UIActivityIndicatorView {
-        
-        let view = UIActivityIndicatorView(style: .large)
-        view.startAnimating()
-        return view
-        
-        
-    }
-    func updateUIView(_ uiView: UIActivityIndicatorView, context: Context) {
-        
-    }
-}
 
 
 
