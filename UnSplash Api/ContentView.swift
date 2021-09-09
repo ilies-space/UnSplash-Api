@@ -43,7 +43,7 @@ struct Home : View {
                             .font(.title)
                             .fontWeight(.bold)
                         
-                        Text("Beutiful,Free Photos")
+                        Text("Beautiful Free Images & Pictures")
                             .font(.caption)
                         
                         
